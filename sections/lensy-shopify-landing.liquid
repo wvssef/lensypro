@@ -18,10 +18,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 {% if section.settings.load_vivi_css %}
-  <link rel="stylesheet" href="{{ 'vivi.css' | asset_url }}">
+  <link rel="stylesheet" href="{{ 'vivi.css' | asset_url }}" data-lensy-rewrite-css>
 {% endif %}
 {% if section.settings.load_site_css %}
-  <link rel="stylesheet" href="{{ 'site.css' | asset_url }}">
+  <link rel="stylesheet" href="{{ 'site.css' | asset_url }}" data-lensy-rewrite-css>
 {% endif %}
 
 <style>
@@ -128,36 +128,105 @@
   var sourceUrl = root.getAttribute('data-source-url');
   var replaceSelector = root.getAttribute('data-replace-selector') || '#shop';
   var probe = root.getAttribute('data-asset-base-probe') || '';
-  var assetBase = probe.replace(/lensy-logo\.svg(\?.*)?$/, '');
+  var assetBase = probe.replace(/lensy-logo\.svg(?:\?.*)?$/, '');
   var productTemplate = document.getElementById('LensyProductOffer-{{ section.id }}');
+
+  function isExternal(path) {
+    return /^(https?:|\/\/|data:|blob:|mailto:|tel:|#)/i.test(path || '');
+  }
+
+  function cleanAssetPath(path) {
+    return (path || '')
+      .trim()
+      .replace(/^url\((['"]?)(.*?)\1\)$/i, '$2')
+      .replace(/^\.\//, '')
+      .replace(/^\/assets\//, '')
+      .replace(/^assets\//, '')
+      .replace(/^\/css\//, '')
+      .replace(/^css\//, '')
+      .replace(/\?.*$/, '')
+      .replace(/^\//, '');
+  }
 
   function toAssetUrl(path) {
     if (!path) return path;
-    if (/^(https?:|data:|mailto:|tel:|#)/i.test(path)) return path;
-    var clean = path.replace(/^\.\//, '').replace(/^assets\//, '').replace(/^css\//, '').replace(/\?.*$/, '');
+    if (isExternal(path)) return path;
+    var clean = cleanAssetPath(path);
     return assetBase + clean;
   }
 
-  function rewriteInlineStyle(style) {
-    if (!style) return style;
-    return style.replace(/url\((['"]?)(?:\.\/)?(?:assets\/|css\/)?([^)'"?#]+)(?:\?[^)'"]*)?\1\)/g, function(_, quote, file){
+  function rewriteSrcset(value) {
+    if (!value) return value;
+    return value.split(',').map(function(part){
+      var bits = part.trim().split(/\s+/);
+      if (!bits[0]) return part;
+      bits[0] = toAssetUrl(bits[0]);
+      return bits.join(' ');
+    }).join(', ');
+  }
+
+  function rewriteCssUrls(text) {
+    if (!text) return text;
+    return text.replace(/url\((['"]?)(?!https?:|\/\/|data:|blob:|#)([^)'"?#]+)(?:\?[^)'"]*)?\1\)/gi, function(_, quote, file){
       return 'url("' + toAssetUrl(file) + '")';
     });
   }
 
   function rewriteNodeAssets(scope) {
-    scope.querySelectorAll('[src]').forEach(function(el){ el.setAttribute('src', toAssetUrl(el.getAttribute('src'))); });
+    ['src', 'data-src', 'data-original', 'data-lazy-src', 'poster'].forEach(function(attr){
+      scope.querySelectorAll('[' + attr + ']').forEach(function(el){
+        el.setAttribute(attr, toAssetUrl(el.getAttribute(attr)));
+      });
+    });
+
+    ['srcset', 'data-srcset', 'data-lazy-srcset'].forEach(function(attr){
+      scope.querySelectorAll('[' + attr + ']').forEach(function(el){
+        el.setAttribute(attr, rewriteSrcset(el.getAttribute(attr)));
+      });
+    });
+
     scope.querySelectorAll('[href]').forEach(function(el){
       var href = el.getAttribute('href');
-      if (href && !href.startsWith('#') && !/^(https?:|mailto:|tel:)/i.test(href)) el.setAttribute('href', toAssetUrl(href));
+      if (href && !isExternal(href) && !href.startsWith('#')) el.setAttribute('href', toAssetUrl(href));
     });
-    scope.querySelectorAll('[style]').forEach(function(el){ el.setAttribute('style', rewriteInlineStyle(el.getAttribute('style'))); });
+
+    scope.querySelectorAll('[style]').forEach(function(el){
+      el.setAttribute('style', rewriteCssUrls(el.getAttribute('style')));
+    });
+
+    scope.querySelectorAll('style').forEach(function(el){
+      el.textContent = rewriteCssUrls(el.textContent);
+    });
+
     scope.querySelectorAll('link[rel="stylesheet"]').forEach(function(el){ el.remove(); });
+
     scope.querySelectorAll('script').forEach(function(oldScript){
       var s = document.createElement('script');
-      Array.prototype.slice.call(oldScript.attributes).forEach(function(attr){ s.setAttribute(attr.name, attr.value); });
+      Array.prototype.slice.call(oldScript.attributes).forEach(function(attr){
+        if (attr.name === 'src') s.setAttribute(attr.name, toAssetUrl(attr.value));
+        else s.setAttribute(attr.name, attr.value);
+      });
       s.text = oldScript.text || oldScript.textContent || '';
       oldScript.parentNode.replaceChild(s, oldScript);
+    });
+  }
+
+  function rewriteThemeCssFiles() {
+    document.querySelectorAll('link[data-lensy-rewrite-css]').forEach(function(link){
+      var href = link.getAttribute('href');
+      if (!href || link.dataset.lensyDone === '1') return;
+      link.dataset.lensyDone = '1';
+      fetch(href, { credentials: 'same-origin' })
+        .then(function(res){ return res.ok ? res.text() : ''; })
+        .then(function(css){
+          if (!css) return;
+          var style = document.createElement('style');
+          style.setAttribute('data-lensy-inline-css', href);
+          style.textContent = rewriteCssUrls(css);
+          link.parentNode.insertBefore(style, link.nextSibling);
+          link.remove();
+        })
+        .catch(function(){});
     });
   }
 
@@ -184,6 +253,8 @@
     }
   }
 
+  rewriteThemeCssFiles();
+
   fetch(sourceUrl, { credentials: 'omit' })
     .then(function(res){ if(!res.ok) throw new Error('Could not load source page: ' + res.status); return res.text(); })
     .then(function(html){
@@ -195,6 +266,7 @@
       mountProductOffer(wrapper);
       root.innerHTML = '';
       root.appendChild(wrapper);
+      rewriteThemeCssFiles();
     })
     .catch(function(err){
       root.innerHTML = '<div class="lensy-shopify-error"><strong>Lensy page failed to load.</strong><br>' + err.message + '<br><br>Make sure the source URL is public and the asset files are uploaded into the Shopify theme assets folder.</div>';
