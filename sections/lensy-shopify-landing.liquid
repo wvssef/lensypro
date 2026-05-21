@@ -1,0 +1,223 @@
+{% comment %}
+  Lensy Shopify landing adapter.
+  Loads one of the existing static HTML pages, rewrites local asset paths to Shopify theme asset URLs,
+  and replaces the static #shop area with a real Shopify product form controlled from the theme editor.
+{% endcomment %}
+
+{% liquid
+  assign selected_product = section.settings.product
+  assign fallback_asset = 'lensy-logo.svg' | asset_url
+  assign product_available = false
+  if selected_product != blank and selected_product.available
+    assign product_available = true
+  endif
+%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+{% if section.settings.load_vivi_css %}
+  <link rel="stylesheet" href="{{ 'vivi.css' | asset_url }}">
+{% endif %}
+{% if section.settings.load_site_css %}
+  <link rel="stylesheet" href="{{ 'site.css' | asset_url }}">
+{% endif %}
+
+<style>
+  .lensy-shopify-shell { width: 100%; overflow-x: clip; }
+  .lensy-shopify-loading { padding: 48px 20px; text-align: center; font-family: Manrope, system-ui, sans-serif; color: #0A1F44; }
+  .lensy-shopify-error { max-width: 760px; margin: 32px auto; padding: 24px; border-radius: 18px; background: #fff3f3; color: #7f1d1d; font-family: Manrope, system-ui, sans-serif; }
+  .lensy-product-offer { padding: 44px 18px; background: #f7f9fb; font-family: Manrope, system-ui, sans-serif; color: #0A1F44; }
+  .lensy-product-offer__inner { max-width: 1120px; margin: 0 auto; display: grid; gap: 24px; align-items: center; }
+  .lensy-product-offer__card { background: #fff; border: 1px solid rgba(10,31,68,.10); border-radius: 28px; box-shadow: 0 18px 50px rgba(10,31,68,.10); overflow: hidden; }
+  .lensy-product-offer__grid { display: grid; gap: 0; }
+  .lensy-product-offer__media { background: linear-gradient(180deg,#eef4fb,#ffffff); padding: 22px; display: flex; align-items: center; justify-content: center; min-height: 280px; }
+  .lensy-product-offer__media img { width: 100%; max-width: 460px; height: auto; object-fit: contain; display: block; }
+  .lensy-product-offer__copy { padding: 24px; }
+  .lensy-product-offer__eyebrow { display: inline-flex; margin-bottom: 10px; padding: 6px 10px; border-radius: 999px; background: #E8F7EE; color: #1F8A4A; font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+  .lensy-product-offer__title { margin: 0 0 8px; font-size: clamp(28px, 5vw, 48px); line-height: 1; letter-spacing: -.04em; font-weight: 900; color: #0A1F44; }
+  .lensy-product-offer__subtitle { margin: 0 0 16px; color: rgba(10,31,68,.72); font-size: 17px; line-height: 1.45; }
+  .lensy-product-offer__price { display: flex; align-items: baseline; gap: 10px; margin: 0 0 16px; font-weight: 900; color: #0A1F44; }
+  .lensy-product-offer__price-main { font-size: 30px; }
+  .lensy-product-offer__compare { color: rgba(10,31,68,.42); text-decoration: line-through; font-size: 18px; }
+  .lensy-product-offer__label { display: block; margin: 14px 0 7px; font-size: 12px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: rgba(10,31,68,.62); }
+  .lensy-product-offer__select, .lensy-product-offer__qty { width: 100%; border: 1px solid rgba(10,31,68,.16); border-radius: 14px; padding: 14px 14px; min-height: 50px; background: #fff; color: #0A1F44; font: 700 15px Manrope, system-ui, sans-serif; }
+  .lensy-product-offer__qty { max-width: 110px; }
+  .lensy-product-offer__btn { width: 100%; margin-top: 16px; border: 0; border-radius: 999px; min-height: 58px; background: #1F8A4A; color: #fff; font: 900 17px Manrope, system-ui, sans-serif; letter-spacing: .02em; cursor: pointer; box-shadow: 0 14px 28px rgba(31,138,74,.24); }
+  .lensy-product-offer__btn[disabled] { opacity: .55; cursor: not-allowed; box-shadow: none; }
+  .lensy-product-offer__trust { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; color: rgba(10,31,68,.66); font-size: 13px; font-weight: 700; }
+  .lensy-product-offer__placeholder { padding: 28px; text-align: center; background: #fffbe6; border: 1px solid #fde68a; border-radius: 18px; font-family: Manrope, system-ui, sans-serif; color: #713f12; }
+  @media (min-width: 860px) { .lensy-product-offer__grid { grid-template-columns: .95fr 1.05fr; } .lensy-product-offer__copy { padding: 42px; } }
+</style>
+
+<div class="lensy-shopify-shell" data-lensy-shopify-landing
+  data-source-url="{{ section.settings.source_url | escape }}"
+  data-replace-selector="{{ section.settings.replace_selector | default: '#shop' | escape }}"
+  data-asset-base-probe="{{ fallback_asset }}">
+  <div class="lensy-shopify-loading">Loading Lensy page…</div>
+</div>
+
+<template id="LensyProductOffer-{{ section.id }}">
+  <section class="lensy-product-offer" id="shop" aria-label="Shop Lensy">
+    <div class="lensy-product-offer__inner">
+      {% if selected_product != blank %}
+        <div class="lensy-product-offer__card">
+          <div class="lensy-product-offer__grid">
+            <div class="lensy-product-offer__media">
+              {% if selected_product.featured_image %}
+                {{ selected_product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', alt: selected_product.title }}
+              {% else %}
+                <img src="{{ 'product-1.jpg' | asset_url }}" alt="{{ selected_product.title | escape }}" loading="lazy">
+              {% endif %}
+            </div>
+            <div class="lensy-product-offer__copy">
+              <span class="lensy-product-offer__eyebrow">{{ section.settings.offer_eyebrow }}</span>
+              <h2 class="lensy-product-offer__title">{{ section.settings.offer_title | default: selected_product.title }}</h2>
+              <p class="lensy-product-offer__subtitle">{{ section.settings.offer_subtitle }}</p>
+
+              <div class="lensy-product-offer__price" data-lensy-price-wrap>
+                <span class="lensy-product-offer__price-main" data-lensy-price>{{ selected_product.selected_or_first_available_variant.price | money }}</span>
+                {% if selected_product.selected_or_first_available_variant.compare_at_price > selected_product.selected_or_first_available_variant.price %}
+                  <span class="lensy-product-offer__compare" data-lensy-compare>{{ selected_product.selected_or_first_available_variant.compare_at_price | money }}</span>
+                {% endif %}
+              </div>
+
+              {% form 'product', selected_product, id: 'LensyProductForm', class: 'lensy-product-offer__form' %}
+                {% if selected_product.has_only_default_variant == false %}
+                  <label class="lensy-product-offer__label" for="LensyVariant-{{ section.id }}">Choose option</label>
+                  <select id="LensyVariant-{{ section.id }}" class="lensy-product-offer__select" name="id" data-lensy-variant-select>
+                    {% for variant in selected_product.variants %}
+                      <option value="{{ variant.id }}" data-price="{{ variant.price | money }}" data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money }}{% endif %}" {% if variant == selected_product.selected_or_first_available_variant %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+                        {{ variant.title }}{% unless variant.available %} — Sold out{% endunless %}
+                      </option>
+                    {% endfor %}
+                  </select>
+                {% else %}
+                  <input type="hidden" name="id" value="{{ selected_product.selected_or_first_available_variant.id }}">
+                {% endif %}
+
+                <label class="lensy-product-offer__label" for="LensyQty-{{ section.id }}">Quantity</label>
+                <input id="LensyQty-{{ section.id }}" class="lensy-product-offer__qty" type="number" name="quantity" value="1" min="1">
+
+                <button class="lensy-product-offer__btn" type="submit" {% unless product_available %}disabled{% endunless %}>
+                  {% if product_available %}{{ section.settings.button_text }}{% else %}Sold Out{% endif %}
+                </button>
+              {% endform %}
+
+              <div class="lensy-product-offer__trust">
+                <span>Ships in 24hr</span><span>·</span><span>30-Day Money-Back</span><span>·</span><span>Secure Checkout</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="lensy-product-offer__placeholder">
+          Select a product in this section’s settings. The product form will appear here and replace the static #shop area.
+        </div>
+      {% endif %}
+    </div>
+  </section>
+</template>
+
+<script>
+(function(){
+  var root = document.querySelector('[data-lensy-shopify-landing][data-source-url="{{ section.settings.source_url | escape }}"]');
+  if (!root) return;
+
+  var sourceUrl = root.getAttribute('data-source-url');
+  var replaceSelector = root.getAttribute('data-replace-selector') || '#shop';
+  var probe = root.getAttribute('data-asset-base-probe') || '';
+  var assetBase = probe.replace(/lensy-logo\.svg(\?.*)?$/, '');
+  var productTemplate = document.getElementById('LensyProductOffer-{{ section.id }}');
+
+  function toAssetUrl(path) {
+    if (!path) return path;
+    if (/^(https?:|data:|mailto:|tel:|#)/i.test(path)) return path;
+    var clean = path.replace(/^\.\//, '').replace(/^assets\//, '').replace(/^css\//, '').replace(/\?.*$/, '');
+    return assetBase + clean;
+  }
+
+  function rewriteInlineStyle(style) {
+    if (!style) return style;
+    return style.replace(/url\((['"]?)(?:\.\/)?(?:assets\/|css\/)?([^)'"?#]+)(?:\?[^)'"]*)?\1\)/g, function(_, quote, file){
+      return 'url("' + toAssetUrl(file) + '")';
+    });
+  }
+
+  function rewriteNodeAssets(scope) {
+    scope.querySelectorAll('[src]').forEach(function(el){ el.setAttribute('src', toAssetUrl(el.getAttribute('src'))); });
+    scope.querySelectorAll('[href]').forEach(function(el){
+      var href = el.getAttribute('href');
+      if (href && !href.startsWith('#') && !/^(https?:|mailto:|tel:)/i.test(href)) el.setAttribute('href', toAssetUrl(href));
+    });
+    scope.querySelectorAll('[style]').forEach(function(el){ el.setAttribute('style', rewriteInlineStyle(el.getAttribute('style'))); });
+    scope.querySelectorAll('link[rel="stylesheet"]').forEach(function(el){ el.remove(); });
+    scope.querySelectorAll('script').forEach(function(oldScript){
+      var s = document.createElement('script');
+      Array.prototype.slice.call(oldScript.attributes).forEach(function(attr){ s.setAttribute(attr.name, attr.value); });
+      s.text = oldScript.text || oldScript.textContent || '';
+      oldScript.parentNode.replaceChild(s, oldScript);
+    });
+  }
+
+  function mountProductOffer(scope) {
+    if (!productTemplate) return;
+    var offer = productTemplate.content.cloneNode(true);
+    var target = scope.querySelector(replaceSelector) || scope.querySelector('#shop');
+    if (target) target.replaceWith(offer);
+    else scope.appendChild(offer);
+
+    var select = scope.querySelector('[data-lensy-variant-select]');
+    var price = scope.querySelector('[data-lensy-price]');
+    var compare = scope.querySelector('[data-lensy-compare]');
+    if (select && price) {
+      select.addEventListener('change', function(){
+        var option = select.options[select.selectedIndex];
+        price.textContent = option.getAttribute('data-price') || price.textContent;
+        if (compare) {
+          var c = option.getAttribute('data-compare') || '';
+          compare.textContent = c;
+          compare.style.display = c ? '' : 'none';
+        }
+      });
+    }
+  }
+
+  fetch(sourceUrl, { credentials: 'omit' })
+    .then(function(res){ if(!res.ok) throw new Error('Could not load source page: ' + res.status); return res.text(); })
+    .then(function(html){
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var body = doc.body || doc;
+      var wrapper = document.createElement('div');
+      wrapper.innerHTML = body.innerHTML;
+      rewriteNodeAssets(wrapper);
+      mountProductOffer(wrapper);
+      root.innerHTML = '';
+      root.appendChild(wrapper);
+    })
+    .catch(function(err){
+      root.innerHTML = '<div class="lensy-shopify-error"><strong>Lensy page failed to load.</strong><br>' + err.message + '<br><br>Make sure the source URL is public and the asset files are uploaded into the Shopify theme assets folder.</div>';
+    });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Lensy landing adapter",
+  "settings": [
+    { "type": "url", "id": "source_url", "label": "Static HTML source URL" },
+    { "type": "text", "id": "replace_selector", "label": "Selector to replace with Shopify product form", "default": "#shop" },
+    { "type": "checkbox", "id": "load_vivi_css", "label": "Load vivi.css from theme assets", "default": true },
+    { "type": "checkbox", "id": "load_site_css", "label": "Load site.css from theme assets", "default": true },
+    { "type": "product", "id": "product", "label": "Product for checkout section" },
+    { "type": "text", "id": "offer_eyebrow", "label": "Offer eyebrow", "default": "Limited launch offer" },
+    { "type": "text", "id": "offer_title", "label": "Offer title", "default": "Order Lensy PRO 2.0 today" },
+    { "type": "textarea", "id": "offer_subtitle", "label": "Offer subtitle", "default": "Choose your Lensy product below. This is a real Shopify product form connected to your selected product, variants, inventory and checkout." },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Add To Cart — Order Now" }
+  ],
+  "presets": [
+    { "name": "Lensy landing adapter" }
+  ]
+}
+{% endschema %}
