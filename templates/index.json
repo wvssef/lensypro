@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "lensy_home": {
+      "type": "lensy-shopify-landing",
+      "settings": {
+        "source_url": "https://raw.githubusercontent.com/wvssef/lensypro/main/index.html",
+        "replace_selector": "#shop",
+        "load_vivi_css": true,
+        "load_site_css": true,
+        "offer_eyebrow": "Limited launch offer",
+        "offer_title": "Order Lensy PRO 2.0 today",
+        "offer_subtitle": "Choose your Lensy product below. This product form is connected to Shopify variants, inventory and checkout.",
+        "button_text": "Add To Cart — Order Now"
+      }
+    }
+  },
+  "order": [
+    "lensy_home"
+  ]
+}
