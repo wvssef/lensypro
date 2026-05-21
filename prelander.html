@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Why Your Contacts Are Making Your Eyes Worse — Lensy™</title>
+  <meta name="description" content="Dirty contacts block oxygen and dry out your eyes. Lensy™ ultrasonic technology delivers clinically-grade clean lenses in just 3 minutes — no rubbing, no chemicals, no 6-hour wait." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --ink:    #0A1F44;
+      --soft:   rgba(10,31,68,0.68);
+      --dim:    rgba(10,31,68,0.45);
+      --brand:  #092045;
+      --cta:    #27AE60;
+      --cta-d:  #1F8A4A;
+      --warn:   #C8242A;
+      --line:   rgba(10,31,68,0.09);
+      --bg:     #F8FAFC;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #fff;
+      color: var(--ink);
+      font-family: 'Manrope', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      font-size: 18px;
+    }
+    img { max-width: 100%; display: block; height: auto; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Reading progress ── */
+    #progress {
+      position: fixed; top: 0; left: 0; height: 3px;
+      width: 0; background: var(--cta); z-index: 9999;
+      transition: width 0.08s linear;
+    }
+
+    /* ── Header — logo only ── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      padding: 14px 24px;
+    }
+    .nav__inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: center; }
+    .nav__logo img { height: 32px; width: auto; display: block; }
+
+    /* ── Content wrapper ── */
+    .wrap {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ── Section spacing ── */
+    .section { padding: clamp(40px,6vw,72px) 0; }
+    .section--alt { background: var(--bg); }
+    .section--dark { background: var(--brand); color: #fff; }
+
+    /* ── Eyebrow ── */
+    .eyebrow {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    /* ── Hook headline ── */
+    .hero__h1 {
+      font-weight: 900;
+      font-size: clamp(32px, 6vw, 52px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      text-align: center;
+      text-wrap: balance;
+      margin-bottom: 16px;
+    }
+    .hero__sub {
+      font-size: clamp(18px, 1.9vw, 22px);
+      color: var(--soft);
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    /* ── Hero image ── */
+    .hero__img {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto 32px;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .hero__img img { width: 100%; height: auto; display: block; }
+
+    /* ── Bullet list — symptoms ── */
+    .blist { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .blist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .blist__icon {
+      flex-shrink: 0;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .blist__icon--warn { background: rgba(200,36,42,0.10); }
+    .blist__icon--warn svg { color: var(--warn); }
+    .blist__icon--check { background: rgba(39,174,96,0.12); }
+    .blist__icon--check svg { color: var(--cta); }
+
+    /* ── Callout ── */
+    .callout {
+      background: #FFF8E6;
+      border-left: 4px solid #F5C341;
+      border-radius: 0 10px 10px 0;
+      padding: 22px 26px;
+      margin-top: 4px;
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+    .callout strong { font-weight: 800; }
+
+    /* ── Pull quote ── */
+    .pullquote {
+      text-align: center;
+      font-size: clamp(17px, 1.8vw, 21px);
+      font-weight: 800;
+      color: var(--ink);
+      margin: 36px auto;
+      line-height: 1.4;
+      max-width: 580px;
+      padding: 0 20px;
+    }
+
+    /* ── Section heading ── */
+    h2.section-h {
+      font-weight: 900;
+      font-size: clamp(28px, 4.5vw, 42px);
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      color: var(--ink);
+      text-align: center;
+      text-wrap: balance;
+      margin-bottom: clamp(24px, 3vw, 36px);
+    }
+    .section--dark h2.section-h { color: #fff; }
+
+    /* ── STOP banner ── */
+    .stop-banner {
+      background: rgba(200,36,42,0.05);
+      border: 1px solid rgba(200,36,42,0.16);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-top: 24px;
+      text-align: center;
+    }
+    .stop-banner__tag {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--warn);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .stop-banner p { font-size: 18px; color: var(--ink); line-height: 1.65; }
+    .stop-banner strong { font-weight: 800; }
+
+    /* ── CTA button ── */
+    .cta-wrap { text-align: center; padding: clamp(28px,4vw,44px) 20px; }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--cta);
+      color: #fff;
+      font-weight: 900;
+      font-size: clamp(18px, 1.8vw, 21px);
+      padding: 18px 44px;
+      border-radius: 999px;
+      box-shadow: 0 10px 28px rgba(39,174,96,0.28);
+      transition: background .15s ease, transform .15s ease;
+    }
+    .cta-btn:hover { background: var(--cta-d); transform: translateY(-2px); }
+    .cta-note {
+      display: block;
+      margin-top: 12px;
+      font-size: 15px;
+      color: var(--dim);
+      font-weight: 600;
+    }
+
+    @media (max-width: 540px) {
+      .cta-btn { width: 100%; padding: 18px 24px; }
+    }
+
+    /* ── Product section ── */
+    .product-img {
+      width: 100%; max-width: 420px;
+      margin: 0 auto 32px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #E8F2FC 0%, #C8DAEA 100%);
+      padding: 32px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .product-img img { max-width: 280px; filter: drop-shadow(0 18px 36px rgba(9,32,69,0.20)); }
+
+    .product-copy p {
+      font-size: 18px;
+      color: var(--soft);
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+    .product-copy p:last-child { margin-bottom: 0; }
+    .product-copy strong { color: var(--ink); font-weight: 700; }
+
+    /* ── Why block ── */
+    .why-block {
+      background: var(--bg);
+      border-radius: 16px;
+      padding: clamp(24px, 3vw, 40px) clamp(22px, 3vw, 48px);
+      margin: 0 0 32px;
+    }
+    .why-block p { font-size: 18px; color: var(--ink); line-height: 1.75; }
+    .why-block p + p { margin-top: 14px; }
+    .why-block em {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--brand);
+    }
+
+    /* ── Trust row — 4 simple items ── */
+    .trust-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 32px;
+    }
+    @media (min-width: 640px) { .trust-row { grid-template-columns: repeat(4, 1fr); } }
+    .trust-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+      padding: 20px 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+    .trust-item__icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--brand);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .trust-item__icon svg { width: 22px; height: 22px; }
+    .trust-item span { font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.35; }
+
+    /* ── Inline divider quote ── */
+    .divider-q {
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 28px 20px;
+      margin: 8px 0;
+      text-align: center;
+    }
+    .divider-q p {
+      font-size: clamp(20px, 2vw, 24px);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.45;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ── Frustrating section ── */
+    .frustrating p {
+      font-size: clamp(17px, 1.6vw, 20px);
+      color: var(--soft);
+      line-height: 1.75;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .frustrating .highlight {
+      text-align: center;
+      font-size: clamp(20px, 2vw, 24px);
+      font-weight: 800;
+      color: var(--ink);
+      margin-top: 20px;
+    }
+
+    /* ── References ── */
+    .references {
+      background: var(--bg);
+      border-top: 1px solid var(--line);
+      padding: clamp(28px,4vw,48px) 0;
+    }
+    .references h4 {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .references ol { max-width: 740px; margin: 0 auto; padding: 0 20px 0 34px; }
+    .references li { font-size: 12px; color: var(--dim); line-height: 1.6; margin-bottom: 6px; }
+    .references a { color: var(--brand); text-decoration: underline; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--brand);
+      color: rgba(255,255,255,0.65);
+      text-align: center;
+      padding: 44px 24px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .footer__logo { margin-bottom: 16px; }
+    .footer__logo img { height: 28px; width: auto; filter: brightness(0) invert(1); margin: 0 auto; }
+    .footer__links {
+      display: flex; justify-content: center; flex-wrap: wrap;
+      gap: 6px 20px; margin: 16px 0;
+    }
+    .footer__links a { color: rgba(255,255,255,0.80); font-weight: 600; font-size: 13px; }
+    .footer__links a:hover { color: #fff; }
+    .footer__disclaimer {
+      font-size: 12px; font-style: italic;
+      color: rgba(255,255,255,0.45);
+      max-width: 700px; margin: 16px auto 0;
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- HEADER — logo only, no CTA -->
+<header class="nav">
+  <div class="nav__inner">
+    <a href="https://lensy.co/" aria-label="Lensy home">
+      <img src="assets/lensy-logo.svg" alt="Lensy" style="height: 50px; width: 15px" />
+    </a>
+  </div>
+</header>
+
+<!-- ============================================================
+     SECTION 1 · HOOK
+     ============================================================ -->
+<section class="section" style="padding: 72px 0px 20px">
+  <div class="wrap">
+    <span class="eyebrow" style="font-size: 14px; color: rgb(183, 0, 0)">For The 45 Million Americans Wearing Contacts</span>
+    <h1 class="hero__h1">Why Do Your Eyes Still Burn, Itch &amp; Blur — Even After Cleaning Your Contacts?</h1>
+    <p class="hero__sub" style="font-size: 20px">You're rubbing, rinsing and hours of soaking for a "good clean" — but are you actually getting your lenses clean, or just moving the gunk around?</p>
+
+    <div class="hero__img">
+      <img src="https://lensy.co/cdn/shop/files/Capture_d_ecran_2024-10-30_a_4.03.59_PM_7b890602-bb74-4706-b555-ec93b21b6328.png?v=1730275663&width=800" alt="Contact lens wearer experiencing eye discomfort" />
+    </div>
+
+    <ul class="blist">
+      <li>
+        <span class="blist__icon blist__icon--warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></span>
+        <span>Burning or stinging when you put your lenses in</span>
+      </li>
+      <li>
+        <span class="blist__icon blist__icon--warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></span>
+        <span>Cloudy, hazy vision a few hours into the day</span>
+      </li>
+      <li>
+        <span class="blist__icon blist__icon--warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></span>
+        <span>Dry, gritty eyes that beg for drops by lunch</span>
+      </li>
+      <li>
+        <span class="blist__icon blist__icon--warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></span>
+        <span>Red, irritated eyes by the end of the day</span>
+      </li>
+    </ul>
+
+    <div class="callout">These aren't quirks of contact lens life — they're warning signs that protein buildup, bacteria, and microscopic debris are lodged deep inside the pores of your lenses. Each year, over 6,000 contact lens users suffer severe eye infections due to improper cleaning.</div>
+  </div>
+
+  <div class="divider-q">
+    <p>A 3-minute ultrasonic clean could be what your eyes have been missing.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 2 · HOW TO KNOW
+     ============================================================ -->
+<section class="section section--alt">
+  <div class="wrap">
+    <h2 class="section-h">How To Know If Your Contacts Need This Now ?</h2>
+
+    <ul class="blist">
+      <li>
+        <span class="blist__icon blist__icon--check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span>You wear bi-weekly or monthly lenses</span>
+      </li>
+      <li>
+        <span class="blist__icon blist__icon--check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span>Your lenses feel "off" even after a full soak</span>
+      </li>
+      <li>
+        <span class="blist__icon blist__icon--check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span>You skip the rubbing step (be honest)</span>
+      </li>
+      <li>
+        <span class="blist__icon blist__icon--check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span>You're tired of waiting 6 hours for peroxide kits</span>
+      </li>
+      <li>
+        <span class="blist__icon blist__icon--check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span>Your eyes dry out long before evening</span>
+      </li>
+      <li>
+        <span class="blist__icon blist__icon--check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span>You toss lenses before their wear date due to discomfort</span>
+      </li>
+    </ul>
+
+    <div class="stop-banner">
+      <span class="stop-banner__tag" style="font-size: 50px">STOP</span>
+      <p style="font-size: 20px">These are not "just part of wearing contacts." They're signs your lenses are <strong>harboring protein residue and bacteria</strong> that surface cleaning can't reach.</p>
+    </div>
+  </div>
+</section>
+
+<div class="cta-wrap">
+  <a href="index.html" class="cta-btn">SUPPORT YOUR EYES HYGIENE →</a>
+  <span class="cta-note">30-Day Money-Back Guarantee &nbsp;·&nbsp; Free US Shipping</span>
+</div>
+
+<!-- ============================================================
+     SECTION 3 · THE GROSSNESS
+     ============================================================ -->
+<section class="section">
+  <div class="wrap">
+    <h2 class="section-h">Your Contacts Are Harboring Protein Residue &amp; Other Grossness</h2>
+
+    <p style="text-align: center; color: var(--soft); font-size: 19px; line-height: 1.6; margin-bottom: 32px; font-weight: 500">Did you know your cornea is the <em style="font-style:italic; font-weight:700;">only</em> part of your body that receives oxygen directly from the air? Contact lenses are built with microscopic pores — like a tiny net — to let that oxygen flow through.</p>
+
+    <div class="hero__img">
+      <img src="https://lensy.co/cdn/shop/files/Generated_Image_September_22_2025_-_12_40AM_1.png?v=1758476511&width=600" alt="Microscopic view of contact lens pores" style="border-radius:12px;" />
+    </div>
+
+    <div class="product-copy">
+      <p style="font-size: 20px"><strong>Those tiny pores are exactly the problem.</strong> Every time you wear contact lenses, <strong>protein deposits and microscopic debris</strong> from your eyes start attaching to them. This buildup doesn't just sit on the surface — <strong>it seeps deep into the lens material</strong>, making it nearly impossible to remove with rubbing, rinsing, or soaking alone.</p>
+      <p style="font-size: 20px">These proteins <strong>block oxygen flow</strong>, causing your eyes to dry out faster — leading to irritation, redness, and even infections.</p>
+      <p style="font-size: 20px">Worse: the buildup creates a <strong>rough surface that becomes a magnet for bacteria</strong>, turning your lenses into a breeding ground for unwanted microorganisms and hidden threats.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4 · THE FRUSTRATING ROUTINE
+     ============================================================ -->
+<section class="section section--alt">
+  <div class="wrap">
+    <h2 class="section-h">The Routine Is Frustrating.<br/>Your Eyes Deserve Better.</h2>
+    <div class="frustrating">
+      <p style="font-size: 20px">For many, contact lenses are a daily necessity — but the cleaning routine is a daily headache. <strong style="color:var(--ink);">Multipurpose solutions</strong> demand 10 minutes of rubbing and rinsing. <strong style="color:var(--ink);">Hydrogen peroxide kits</strong> demand a 6-hour neutralizing wait. And skipping a step? That's how protein deposits, dryness, and infections sneak in.</p>
+      <p class="highlight">You deserve contact lenses that feel truly clean, clear, and safe.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 5 · ONE SIMPLE STEP — INTRODUCING LENSY
+     ============================================================ -->
+<section class="section">
+  <div class="wrap">
+    <h2 class="section-h">One Simple Step For Crystal-Clear,<br/>Hygienically-Safe Contacts</h2>
+
+    <div class="hero__img" style="max-width:100%; border-radius:16px; overflow:hidden; margin-bottom:32px;">
+      <img src="https://lensy.co/cdn/shop/files/Blurry_vision_37d6d0bf-d880-4428-85ea-51329fff6719.svg?v=1733844490&width=1200" alt="Lensy Pro 2.0 Ultrasonic Contact Lens Cleaner" style="width:100%;height:auto;" />
+    </div>
+
+    <span class="eyebrow">Introducing</span>
+    <h2 class="section-h" style="margin-top:8px; margin-bottom:18px;">Lensy™ Pro 2.0 — Ultrasonic Deep Clean In 3 Minutes</h2>
+
+    <div class="product-copy">
+      <p>Lensy™ is a <strong>drop &amp; go</strong> ultrasonic cleaner that delivers a patented two-step deep clean: high-frequency waves at <strong>105 kHz</strong> loosen debris and protein build-up, then <strong>millions of micro-bubbles</strong> lift hidden deposits out of the pores of your lens.</p>
+      <p>This gentle cavitation cleans <strong>without damaging delicate lens materials</strong> and restores the tear film surface for better oxygen flow — in just <strong>3 minutes</strong>. No rubbing. No chemical burns. No 6-hour wait.</p>
+    </div>
+
+    <!-- WHY PEOPLE CHOOSE -->
+    <h2 class="section-h" style="margin-top: clamp(44px,5vw,64px);">Why People Choose Lensy</h2>
+
+    <div class="why-block">
+      <p><strong>Lensy™ Pro 2.0 combines patented ultrasonic technology with FDA-cleared engineering to deliver the deepest clean your contact lenses have ever experienced.</strong> It eliminates the <em>burning sting of dirty lenses</em>, the <em>cloudy haze that creeps in by mid-afternoon</em>, and the <em>dry, gritty feeling</em> that has every contact wearer reaching for eye drops.</p>
+      <p>Each cycle delivers the deep-clean power of millions of micro-bubbles reaching inside every pore of your lens — something rubbing and soaking physically cannot do. And unlike harsh peroxide kits or messy manual cleaning, Lensy™ works with your lenses — preserving their lifespan, restoring all-day comfort, and protecting your eyes from infection-causing bacteria. All in 3 minutes flat.</p>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-item">
+        <div class="trust-item__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span>Patented Ultrasonic Technology</span>
+      </div>
+      <div class="trust-item">
+        <div class="trust-item__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M4 12C5.7 7.2 8.6 4 12 4s6.3 3.2 8 8c-1.7 4.8-4.6 8-8 8s-6.3-3.2-8-8z"/></svg>
+        </div>
+        <span>Ophthalmologist Recommended</span>
+      </div>
+      <div class="trust-item">
+        <div class="trust-item__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <span>FDA-Cleared &amp; Lab-Tested</span>
+      </div>
+      <div class="trust-item">
+        <div class="trust-item__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9"/></svg>
+        </div>
+        <span>30-Day Money-Back Guarantee</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOUNDER STORY -->
+<section class="section section--alt">
+  <div class="wrap">
+    <h2 class="section-h">Lensy started with a frustration optometrists hear every week...</h2>
+    <div class="why-block" style="margin-top: 0;">
+      <p>People skip cleaning because the alternatives are tedious, harsh, or simply don't work. We engineered the first truly portable 105 kHz ultrasonic cleaner specifically for contact lenses — and the industry noticed. Today over 10,000 wearers wake up to lenses that feel new.</p>
+    </div>
+  </div>
+</section>
+
+<div class="cta-wrap" style="background: var(--brand); padding: clamp(40px,5vw,64px) 20px;">
+  <a href="index.html" class="cta-btn">Try Lensy Today →</a>
+  <span class="cta-note" style="color:rgba(255,255,255,0.60);">Free US Shipping &nbsp;·&nbsp; 30-Day Money-Back Guarantee</span>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer__logo">
+    <img src="assets/lensy-logo.svg" alt="Lensy" />
+  </div>
+  <p>© 2026 Lensy, Inc. All Rights Reserved.</p>
+  <div class="footer__links">
+    <a href="https://lensy.co/policies/privacy-policy">Privacy Policy</a>
+    <a href="https://lensy.co/policies/terms-of-service">Terms of Service</a>
+    <a href="https://lensy.co/policies/shipping-policy">Shipping Policy</a>
+    <a href="https://lensy.co/policies/refund-policy">Refund Policy</a>
+  </div>
+  <p class="footer__disclaimer">*Statements about contact lens hygiene and eye health are informational only and are not intended to diagnose, treat, cure, or prevent any disease. Information provided on this site is not a substitute for professional medical advice from a licensed eye care professional. Individual results may vary.</p>
+</footer>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', function() {
+    var el = document.getElementById('progress');
+    if (!el) return;
+    var pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    el.style.width = Math.min(pct, 100) + '%';
+  });
+</script>
+</body>
+</html>
