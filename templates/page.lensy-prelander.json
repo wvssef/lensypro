@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "lensy_prelander": {
+      "type": "lensy-shopify-landing",
+      "settings": {
+        "source_url": "https://raw.githubusercontent.com/wvssef/lensypro/main/prelander.html",
+        "replace_selector": "#shop",
+        "load_vivi_css": false,
+        "load_site_css": false,
+        "offer_eyebrow": "Recommended next step",
+        "offer_title": "Try Lensy PRO 2.0",
+        "offer_subtitle": "This checkout section is connected to the Shopify product you select in the theme editor.",
+        "button_text": "Add To Cart — Try Lensy"
+      }
+    }
+  },
+  "order": [
+    "lensy_prelander"
+  ]
+}
